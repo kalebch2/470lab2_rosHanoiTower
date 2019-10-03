@@ -3,9 +3,6 @@
 #Run roslaunch ur3_driver ur3_driver.launch in the first terminal
 #Be sure to source devel/setup.bash in the second terminal
 #Run rosrun lab2pkg_py lab2_exec.py at least once or you might not see some data.
-
-
-
 import sys
 import copy
 import time
@@ -24,8 +21,7 @@ current_position = copy.deepcopy(home)
 
 
 ############## Your Code Start Here ##############
-
-# Hanoi tower location 1
+# Hanoi tower locations
 
 Q11 = np.radians([147.9, -52.2, 114.1, -152.8, -90, 57])
 Q12 = np.radians([147.9, -58.71, 113.4, -145.7, -90, 57])
@@ -44,8 +40,6 @@ Q = [ [Q11, Q12, Q13], \
       [Q31, Q32, Q33] ]
 
 ############### Your Code End Here ###############
-
-
 thetas = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 digital_in_0 = 0
@@ -73,8 +67,6 @@ def gripper_callback(msg):
 
 
 ############### Your Code End Here ###############
-
-
 """
 Whenever ur3/position publishes info, this callback function is called.
 """
@@ -189,7 +181,6 @@ def move_arm(pub_cmd, loop_rate, dest, vel, accel):
 
 
 ############## Your Code Start Here ##############
-
 def move_block(pub_cmd, loop_rate, start_loc, start_height, \
 	           end_loc, end_height):
 	global Q
@@ -197,27 +188,7 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
 
 	return error
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ############### Your Code End Here ###############
-
-
 def main():
 
 	global home
@@ -285,14 +256,7 @@ def main():
 	end_ind = end_location - 1
 
 
-
-
-
-
-
-
 	############### Your Code End Here ###############
-
 	# Check if ROS is ready for operation
 	while(rospy.is_shutdown()):
 		print("ROS is shutdown!")
@@ -303,18 +267,17 @@ def main():
 
 	############## Your Code Start Here ##############
 	# TODO: modify the code so that UR3 can move tower accordingly from user input
-	
-
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-	############################################################################
-	############################################################################
 
+	############################################################################
+	############################################################################
 	#FIRST BLOCK MOVE
 
 	rospy.loginfo("Moving First Block")
 	move_arm(pub_command, loop_rate, Q[start_ind][2], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_on)
+
 	# Delay to make sure suction cup has grasped the block
 	time.sleep(1.0)
 	if digital_in_0 == 0:
@@ -328,15 +291,15 @@ def main():
 
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
+
 	############################################################################
 	############################################################################
-
-
 	#SECOND BLOCK MOVE
 
 	rospy.loginfo("Moving Second Block")
 	move_arm(pub_command, loop_rate, Q[start_ind][1], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_on)
+
 	# Delay to make sure suction cup has grasped the block
 	time.sleep(1.0)
 	if digital_in_0 == 0:
@@ -348,19 +311,17 @@ def main():
 	move_arm(pub_command, loop_rate, Q[inter_ind][0], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_off)
 
-
-
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
+
 	############################################################################
 	############################################################################
-
-
 	#THIRD BLOCK MOVE
 
 	rospy.loginfo("Moving Third Block")
 	move_arm(pub_command, loop_rate, Q[end_ind][0], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_on)
+
 	# Delay to make sure suction cup has grasped the block
 	time.sleep(1.0)
 	if digital_in_0 == 0:
@@ -374,15 +335,15 @@ def main():
 
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
+
 	############################################################################
 	############################################################################
-
-
 	#FOURTH BLOCK MOVE
 
 	rospy.loginfo("Moving Fourth Block")
 	move_arm(pub_command, loop_rate, Q[start_ind][0], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_on)
+
 	# Delay to make sure suction cup has grasped the block
 	time.sleep(1.0)
 	if digital_in_0 == 0:
@@ -394,21 +355,17 @@ def main():
 	move_arm(pub_command, loop_rate, Q[end_ind][0], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_off)
 
-
-
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
-
-############################################################################
 	############################################################################
-
-
+	############################################################################
 	#Fifth BLOCK MOVE
 
 	rospy.loginfo("Moving Fifth Block")
 	move_arm(pub_command, loop_rate, Q[inter_ind][1], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_on)
+
 	# Delay to make sure suction cup has grasped the block
 	time.sleep(1.0)
 	if digital_in_0 == 0:
@@ -420,21 +377,17 @@ def main():
 	move_arm(pub_command, loop_rate, Q[start_ind][0], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_off)
 
-
-
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
-
-############################################################################
 	############################################################################
-
-
+	############################################################################
 	#Sixth BLOCK MOVE
 
 	rospy.loginfo("Moving Sixth Block")
 	move_arm(pub_command, loop_rate, Q[inter_ind][0], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_on)
+
 	# Delay to make sure suction cup has grasped the block
 	time.sleep(1.0)
 	if digital_in_0 == 0:
@@ -446,21 +399,17 @@ def main():
 	move_arm(pub_command, loop_rate, Q[end_ind][1], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_off)
 
-
-
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
-
-############################################################################
 	############################################################################
-
-
+	############################################################################
 	#Seventh BLOCK MOVE
 
 	rospy.loginfo("Moving Seventh Block")
 	move_arm(pub_command, loop_rate, Q[start_ind][0], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_on)
+
 	# Delay to make sure suction cup has grasped the block
 	time.sleep(1.0)
 	if digital_in_0 == 0:
@@ -472,17 +421,10 @@ def main():
 	move_arm(pub_command, loop_rate, Q[end_ind][2], 4.0, 4.0)
 	gripper(pub_command, loop_rate, suction_off)
 
-
-
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
-
-
-
 	############### Your Code End Here ###############
-
-
 
 if __name__ == '__main__':
 	
@@ -491,12 +433,3 @@ if __name__ == '__main__':
     # When Ctrl+C is executed, it catches the exception
 	except rospy.ROSInterruptException:
 		pass
-
-
-	
-
-
-
-
-
-
