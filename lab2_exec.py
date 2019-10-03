@@ -22,7 +22,6 @@ current_position = copy.deepcopy(home)
 
 ############## Your Code Start Here ##############
 # Hanoi tower locations
-
 Q11 = np.radians([147.9, -52.2, 114.1, -152.8, -90, 57])
 Q12 = np.radians([147.9, -58.71, 113.4, -145.7, -90, 57])
 Q13 = np.radians([147.9, -65.3, 111.3, -137.1, -90, 57])
@@ -55,7 +54,7 @@ current_position_set = False
 ############## Your Code Start Here ##############
 
 """
-TODO: define a ROS topic callback funtion for getting the state of suction cup
+TODO: define a ROS topic callback function for getting the state of suction cup
 Whenever ur3/gripper_input publishes info this callback function is called.
 """
 def gripper_callback(msg):
@@ -186,6 +185,23 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
 	global Q
 	error = 0
 
+	move_arm(pub_cmd, loop_rate, Q[start_loc][start_height], 4.0, 4.0)
+	gripper(pub_cmd, loop_rate, suction_on)
+
+	# Delay to make sure suction cup has grasped the block
+	time.sleep(1.0)
+	if digital_in_0 == 0:
+		rospy.loginfo("Error: Block Not Present")
+		gripper(pub_cmd, loop_rate, suction_off)
+		move_arm(pub_cmd, loop_rate, home, 4.0, 4.0)
+		sys.exit()
+	move_arm(pub_cmd, loop_rate, home, 4.0, 4.0)
+	move_arm(pub_cmd, loop_rate, Q[end_loc][end_height], 4.0, 4.0)
+	gripper(pub_cmd, loop_rate, suction_off)
+
+	rospy.loginfo("Moving Home")
+	move_arm(pub_cmd, loop_rate, home, 4.0, 4.0)
+
 	return error
 
 ############### Your Code End Here ###############
@@ -270,159 +286,34 @@ def main():
 	rospy.loginfo("Moving Home")
 	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
-	############################################################################
-	############################################################################
+	####################Tower of Hanoi Solution Movements#######################
 	#FIRST BLOCK MOVE
-
 	rospy.loginfo("Moving First Block")
-	move_arm(pub_command, loop_rate, Q[start_ind][2], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_on)
+	move_block(pub_command, loop_rate, start_ind, 2, end_ind, 0)
 
-	# Delay to make sure suction cup has grasped the block
-	time.sleep(1.0)
-	if digital_in_0 == 0:
-		rospy.loginfo("Error: Block Not Present")
-		gripper(pub_command, loop_rate, suction_off)
-		move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-		sys.exit()
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-	move_arm(pub_command, loop_rate, Q[end_ind][0], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_off)
-
-	rospy.loginfo("Moving Home")
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-
-	############################################################################
-	############################################################################
 	#SECOND BLOCK MOVE
-
 	rospy.loginfo("Moving Second Block")
-	move_arm(pub_command, loop_rate, Q[start_ind][1], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_on)
+	move_block(pub_command, loop_rate, start_ind, 1, inter_ind, 0)
 
-	# Delay to make sure suction cup has grasped the block
-	time.sleep(1.0)
-	if digital_in_0 == 0:
-		rospy.loginfo("Error: Block Not Present")
-		gripper(pub_command, loop_rate, suction_off)
-		move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-		sys.exit()
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-	move_arm(pub_command, loop_rate, Q[inter_ind][0], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_off)
-
-	rospy.loginfo("Moving Home")
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-
-	############################################################################
-	############################################################################
 	#THIRD BLOCK MOVE
-
 	rospy.loginfo("Moving Third Block")
-	move_arm(pub_command, loop_rate, Q[end_ind][0], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_on)
+	move_block(pub_command, loop_rate, end_ind, 0, inter_ind, 1)
 
-	# Delay to make sure suction cup has grasped the block
-	time.sleep(1.0)
-	if digital_in_0 == 0:
-		rospy.loginfo("Error: Block Not Present")
-		gripper(pub_command, loop_rate, suction_off)
-		move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-		sys.exit()
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-	move_arm(pub_command, loop_rate, Q[inter_ind][1], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_off)
-
-	rospy.loginfo("Moving Home")
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-
-	############################################################################
-	############################################################################
 	#FOURTH BLOCK MOVE
-
 	rospy.loginfo("Moving Fourth Block")
-	move_arm(pub_command, loop_rate, Q[start_ind][0], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_on)
+	move_block(pub_command, loop_rate, start_ind, 0, end_ind, 0)
 
-	# Delay to make sure suction cup has grasped the block
-	time.sleep(1.0)
-	if digital_in_0 == 0:
-		rospy.loginfo("Error: Block Not Present")
-		gripper(pub_command, loop_rate, suction_off)
-		move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-		sys.exit()
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-	move_arm(pub_command, loop_rate, Q[end_ind][0], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_off)
-
-	rospy.loginfo("Moving Home")
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-
-	############################################################################
-	############################################################################
 	#Fifth BLOCK MOVE
-
 	rospy.loginfo("Moving Fifth Block")
-	move_arm(pub_command, loop_rate, Q[inter_ind][1], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_on)
+	move_block(pub_command, loop_rate, inter_ind, 1, start_ind, 0)
 
-	# Delay to make sure suction cup has grasped the block
-	time.sleep(1.0)
-	if digital_in_0 == 0:
-		rospy.loginfo("Error: Block Not Present")
-		gripper(pub_command, loop_rate, suction_off)
-		move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-		sys.exit()
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-	move_arm(pub_command, loop_rate, Q[start_ind][0], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_off)
-
-	rospy.loginfo("Moving Home")
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-
-	############################################################################
-	############################################################################
 	#Sixth BLOCK MOVE
-
 	rospy.loginfo("Moving Sixth Block")
-	move_arm(pub_command, loop_rate, Q[inter_ind][0], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_on)
+	move_block(pub_command, loop_rate, inter_ind, 0, end_ind, 1)
 
-	# Delay to make sure suction cup has grasped the block
-	time.sleep(1.0)
-	if digital_in_0 == 0:
-		rospy.loginfo("Error: Block Not Present")
-		gripper(pub_command, loop_rate, suction_off)
-		move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-		sys.exit()
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-	move_arm(pub_command, loop_rate, Q[end_ind][1], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_off)
-
-	rospy.loginfo("Moving Home")
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-
-	############################################################################
-	############################################################################
 	#Seventh BLOCK MOVE
-
 	rospy.loginfo("Moving Seventh Block")
-	move_arm(pub_command, loop_rate, Q[start_ind][0], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_on)
-
-	# Delay to make sure suction cup has grasped the block
-	time.sleep(1.0)
-	if digital_in_0 == 0:
-		rospy.loginfo("Error: Block Not Present")
-		gripper(pub_command, loop_rate, suction_off)
-		move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-		sys.exit()
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-	move_arm(pub_command, loop_rate, Q[end_ind][2], 4.0, 4.0)
-	gripper(pub_command, loop_rate, suction_off)
-
-	rospy.loginfo("Moving Home")
-	move_arm(pub_command, loop_rate, home, 4.0, 4.0)
+	move_block(pub_command, loop_rate, start_ind, 0, end_ind, 2)
 
 	############### Your Code End Here ###############
 
